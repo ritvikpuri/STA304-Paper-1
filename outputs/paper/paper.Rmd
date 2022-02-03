@@ -1,10 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Toronto Apartment Evaluations"
+subtitle: "Subtitle Here"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Ritvik Puri
+  # - Another author
+thanks: "Code and data are available at: www.github.com/ritvikpuri/sta304-paper-1"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 output:
@@ -17,28 +17,53 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(palmerpenguins)
+# library(palmerpenguins)
+library(opendatatoronto)
 ```
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point). 
+<!-- You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point).  -->
 
+The city of Toronto introcued a new bylaw enformenent program in July 2017 that is used to ensure that the apartment building owners and operators comply with the neccesary building maintanence standards, known as RentSafeTO. These standards are applied to all apartment buildings with 10 or more units  or with 3 or more stories.
 
+Owners of such apartments are required to register with RentSafeTO as well as mainitan the standards defined by this program. Tentants need to conatct their respective landlord incase they face an issue. These issues could either be vital, such as heat or hydro fault, or service requests, such as window flaws or common area cleaning.  If the landlord does not comply to these requests, then according to the bylaws of RentSafeTO program, legal action can be taken against them. 
+
+Each property that falls under the program gets insepected by an officer and receives an evaluation score, which is made available to not only the landlord and tenant, but also to the potential tenants. If the score of a building is 86 or above, it will be evaluated again in the next three years. If it is between 66 and 85, it will be evaluated again within two years. If it is between 51 and 65, it will be evaluated again within a year. If a building gets a score of 50 or below, then then the full building will undergo a comprehensive inspection.
+
+Home safety evaluations are neccesary to protect residents from potential hazards which may lead to personal injury if left unchecked. In a city like Toronto, where a lot of people do not own their personal property and live in rented apartments, it is critical that the landlord is kept informed of their building's condition so that they can ensure a tenants safety.
 
 # Data
 
-Our data is of penguins (Figure \@ref(fig:bills)).
+<!-- Our data is of penguins (Figure \@ref(fig:bills)). -->
 
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+# ```{r bills, fig.cap="Bills of penguins", echo = FALSE}
+# ggplot(penguins, aes(x = island, fill = species)) +
+#   geom_bar(alpha = 0.8) +
+#   scale_fill_manual(values = c("darkorange","purple","cyan4"),
+#                     guide = FALSE) +
+#   theme_minimal() +
+#   facet_wrap(~species, ncol = 1) +
+#   coord_flip()
+# ```
+
+```{r}
+	
+package <- show_package("4ef82789-e038-44ef-a478-a8f3590c3eb1")
+package
+ 
+# get all resources for this package
+resources <- list_package_resources("4ef82789-e038-44ef-a478-a8f3590c3eb1")
+ 
+# identify datastore resources; by default, Toronto Open Data sets datastore resource format to CSV for non-geospatial and GeoJSON for geospatial resources
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+ 
+# load the first datastore resource as a sample
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+
+view(data)
 ```
+
 
 Talk more about it.
 
@@ -47,13 +72,13 @@ Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can
 ```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
 
 # This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+# ggplot(penguins, aes(x = island, fill = species)) +
+#   geom_bar(alpha = 0.8) +
+#   scale_fill_manual(values = c("darkorange","purple","cyan4"),
+#                     guide = FALSE) +
+#   theme_minimal() +
+#   facet_wrap(~species, ncol = 1) +
+#   coord_flip()
 ```
 
 Talk way more about it. 
