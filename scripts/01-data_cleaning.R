@@ -1,8 +1,8 @@
 #### Preamble ####
-# Purpose: Clean the survey data downloaded from [...UPDATE ME!!!!!]
-# Author: Rohan Alexander [CHANGE THIS TO YOUR NAME!!!!]
-# Data: 3 January 2021
-# Contact: rohan.alexander@utoronto.ca [PROBABLY CHANGE THIS ALSO!!!!]
+# Purpose: Clean the survey data downloaded from https://open.toronto.ca/dataset/apartment-building-evaluation/
+# Author: Ritvik Puri
+# Data: 6 February 2022
+# Contact: ritvik.puri@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 
 # - Need to have downloaded the ACS data and saved it to inputs/data
@@ -27,9 +27,6 @@ reduced_data <-
   select(first_col, 
          second_col)
 rm(raw_data)
-         
-
-#### What's next? ####
 
 
 

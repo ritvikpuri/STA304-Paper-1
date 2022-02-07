@@ -59,6 +59,7 @@ datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'
 # load the first datastore resource as a sample
 data <- filter(datastore_resources, row_number()==1) %>% get_resource()
 
+#changing data types to numeric
 sapply(data, class)
 data[,1:5] <- sapply(data[,1:5], as.numeric)
 data[,7:7] <- sapply(data[,7:7], as.numeric)
@@ -68,6 +69,7 @@ data[,14:35] <- sapply(data[,14:35], as.numeric)
 data <- data %>% 
   filter(PROPERTY_TYPE == "PRIVATE")
 
+#adding a mean data column for each ward
 mean_data <- data %>%
   group_by(WARDNAME) %>%
   mutate(mean_scores = mean(SCORE))
@@ -235,6 +237,10 @@ year_mean_scores %>%
 A weakness that is evident can be seen in Table 2 above, which is the missing values. I could have removed the row from the table but it should be noted that this dataset contained a lot of missing cells in multiple rows and columns. A lot of columns are also not that helpful when you look at the way they are presented. The OTHER_FACILITIES column gives us the number of extra facilities certain luxury apartments might have. howver, since there is no description is provided, we have no idea of knowning what these features are.
 
 I belive a good step to make as this program continues is to maybe modify the cateogry values that are currently set. As we observed, the average score was 72 and the baseline is at 50. If this baseline is increased, the average score will go up and the quality of buildings all arund the city will increase. Adding some comments for each inspection will also help keep a track of any persisting problems that the buliding has not fixed over many evaluations.
+
+# Conclusion
+
+Whenever the government introduces a new program or policy, I belive it has higher chances of failing than success. Especially if its something new that people don't expect and take time getting accustomed to. The RentSafeTO program according to me turned out to be a successfull one. We can clearly see a growth in the average score every year, albeit taking a bit of a hit due the global coronavirus pandemic in the last 2 years. This growth means that the living conditions have gone from good to better, and more people are inclined to get a place in the city. After things normalize from the pandemic, continuing this program will make sure building owners and landlords abide to it and make sure to maintain a safe and healthy place for poeple to live in. I hope the living conditions continue to get better through the help of this program, even if its just a small contribution.
 
 \newpage
 
