@@ -6,5 +6,5 @@ This repository explores apartment building scores in the city of Toronto using 
 
 ## File Structure
 
--'Inputs' contains the raw csv files
--'Outputs' contains the final pdf, the R markdown file used to produce that and the references
+### 'Inputs' contains the raw csv files
+### 'Outputs' contains the final pdf, the R markdown file used to produce that and the references
