@@ -4,7 +4,7 @@ title: "Apartment Evaluations Have Been Beneficial to the City of Toronto"
 author: 
   - Ritvik Puri
   # - Another author
-thanks: "Code and data are available at: www.github.com/ritvikpuri/sta304-paper-1"
+thanks: "Code and data are available at: www.github.com/ritvikpuri/Toronto-Apartment-Evaluations"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "Building evaluations are always important to conduct, not only from a safety perspective, but also to promote people buying and renting more property. The RentSafeTO program started in 2017, and the data is updated daily on Open Data Toronto, and we will be looking at the various factors that play in the role of giving a better score. Over the last 5 years, we have seen a generally upward trend in building scores. We also find that there are certain features, like multiple stairwells and higher security, that tend to procure a extra points."
 output:
