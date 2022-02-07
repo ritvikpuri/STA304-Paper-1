@@ -1,5 +1,5 @@
 ---
-title: "Toronto Apartment Evaluations Are Hard to Predict"
+title: "Apartment Evaluations Have Been Beneficial to the City of Toronto"
 #subtitle: "Subtitle Here"
 author: 
   - Ritvik Puri
@@ -9,7 +9,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "Building evaluations are always important to conduct, not only from a safety perspective, but also to promote people buying and renting more property. The RentSafeTO program started in 2017, and the data is updated daily on Open Data Toronto, and we will be looking at the various factors that play in the role of giving a better score. Over the last 5 years, we have seen a generally upward trend in building scores. We also find that there are certain features, like multiple stairwells and higher security, that tend to procure a extra points."
 output:
   bookdown::pdf_document2
-toc: FALSE
+toc: no
 bibliography: references.bib
 ---
 
@@ -18,17 +18,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(opendatatoronto)
+library(scales)
+library(viridis)
+library(patchwork)
 ```
 
+\newpage
 # Introduction
 
-<!-- You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point).  -->
+The city of Toronto introcued a new bylaw enformenent program in July 2017 that is used to ensure that the apartment building owners and operators comply with the neccesary building maintanence standards, known as RentSafeTO. These standards are applied to all apartment buildings with 10 or more units  or with 3 or more stories.[@evaluations]
 
-The city of Toronto introcued a new bylaw enformenent program in July 2017 that is used to ensure that the apartment building owners and operators comply with the neccesary building maintanence standards, known as RentSafeTO. These standards are applied to all apartment buildings with 10 or more units  or with 3 or more stories. (REF)
+Owners of such apartments are required to register with RentSafeTO as well as mainitan the standards defined by this program. Tentants need to conatct their respective landlord incase they face an issue. These issues could either be vital, such as heat or hydro fault, or service requests, such as window flaws or common area cleaning.  If the landlord does not comply to these requests, then according to the bylaws of RentSafeTO program, legal action can be taken against them. [@tenants]
 
-Owners of such apartments are required to register with RentSafeTO as well as mainitan the standards defined by this program. Tentants need to conatct their respective landlord incase they face an issue. These issues could either be vital, such as heat or hydro fault, or service requests, such as window flaws or common area cleaning.  If the landlord does not comply to these requests, then according to the bylaws of RentSafeTO program, legal action can be taken against them. 
-
-Each property that falls under the program gets insepected by an officer and receives an evaluation score, which is made available to not only the landlord and tenant, but also to the potential tenants. If the score of a building is 86 or above, it will be evaluated again in the next three years. If it is between 66 and 85, it will be evaluated again within two years. If it is between 51 and 65, it will be evaluated again within a year. If a building gets a score of 50 or below, then then the full building will undergo a comprehensive inspection. (REF)
+Each property that falls under the program gets insepected by an officer and receives an evaluation score, which is made available to not only the landlord and tenant, but also to the potential tenants. If the score of a building is 86 or above, it will be evaluated again in the next three years. If it is between 66 and 85, it will be evaluated again within two years. If it is between 51 and 65, it will be evaluated again within a year. If a building gets a score of 50 or below, then then the full building will undergo a comprehensive inspection. [@evaluations]
 
 Home safety evaluations are neccesary to protect residents from potential hazards which may lead to personal injury if left unchecked. In a city like Toronto, where a lot of people do not own their personal property and live in rented apartments, it is critical that the landlord is kept informed of their building's condition so that they can ensure a tenants safety. 
 
@@ -36,17 +38,15 @@ What has been the results of introducing such a system? Has it been beneficial? 
 
 # Data
 
-<!-- Our data is of penguins (Figure \@ref(fig:bills)). -->
+We have taken Apartment Evaluation Score Data from Open Data Toronto [@toronto] and we will using this to gain a better understading of whether there have been anay improvements in the apartment building conditons. The data almost 10,000 entries spread over 40 columns. These columns give us a variety of information about each evaluation conducted, ranging from year built, year evaluated, property type, score, building address, wardnames, confirmed storeys, confimred units,stairwells, security rooms, laundry rooms, number of entrances, exits and a lot more. [@toronto]
 
-We have taken Apartment Evaluation Score Data from Open Data Toronto(REF) and we will using this to gain a better understading of whether there have been anay improvements in the apartment building conditons. The data almost 10,000 entries spread over 40 columns. These columns give us a variety of information about each evaluation conducted, ranging from year built, year evaluated, property type, score, building address, wardnames, confirmed storeys, confimred units,stairwells, security rooms, laundry rooms, number of entrances, exits and a lot more. (REF)
+To analyze our dataset, I will be using `R` [@citeR], `tidyverse` [@tidyverse], `dplyr` [@dplyr] along with `ggplot2` [@ggplot2], `scales` [@scales], `patchwork` [@patchwork] and `viridis` [@viridis]. There were multiple steps I took to clean and extract the neccesary data. The first thing I did was change the neccesssary column types from character to numeric, because initally columns such as SCORE and WARD were character type and it would not have been possible to graph them. Since we have a lot more entries of PRIVATE property type than PUBLIC and TCHC property types, I filtered out all entries that were not PRIVATE. Thus we will only be assesing the building evaluations for private apartment buildings.
 
-To analyze our dataset, I will be using R (REF), tidyverse (REF), dyplr (REF). There were multiple steps I took to clean and extract the neccesary data. The first thing I did was change the neccesssary column types from character to numeric, because initally columns such as SCORE and WARD were character type and it would not have been possible to graph them. Since we have a lot more entries of PRIVATE property type than PUBLIC and TCHC property types, I filtered out all entries that were not PRIVATE. Thus we will only be assesing the building evaluations for private apartment buildings.
+First I decide to take a look at the average scores of all the buildings based on the categories defined by the RentSafeTO Program [@evaluations]. This meant categorizng scores according to the ranges they mentioned (Figure \@ref(fig:catscores)). To cateogirze the scores I added another column to the database that gave the cateogry based on their scores. I also reported the max, min, mean and standard deviation of all the scores in our dataset. (Table \@ref(fig:scoresummary)). Along with these two plots, I also made a bargraph based on the avereage scores of each of the 25 wards the apartment buildings are classified into. (Figure 2)
 
-First I decide to take a look at the average scores of all the buildings based on the categories defined by the RentSafeTO Program (Ref). This meant categorizng scores according to the ranges they mentioned (Figure 1). To cateogirze the scores I added another column to the database that gave the cateogry based on their scores. I also reported the max, min, mean and standard deviation of all the scores in our dataset. (Table 1). Along with these two plots, I also made a bargraph based on the avereage scores of each of the 25 wards the apartment buildings are classified into. (Figure 2)
+The next four graphs are to see what helps buildings get a higher score than the rest. Since we have a lot of columns, I decided to focus on the most basic ones. Namely, Stairwells, Security, Laundry Rooms and Elevators. I made scatterplots using `ggplot2`[@ggplot2] to see if any of these factors promote scores.
 
-The next four graphs are to see what helps buildings get a higher score than the rest. Since we have a lot of columns, I decided to focus on the most basic ones. Namely, Stairwells, Security, Laundry Rooms and Elevators. I made scatterplots using ggplot(REF) to see if any of these factors promote scores.
-```{r}
-	
+```{r, include = FALSE}
 package <- show_package("4ef82789-e038-44ef-a478-a8f3590c3eb1")
 package
  
@@ -75,43 +75,6 @@ mean_data <- data %>%
 a <- unique(mean_data$WARDNAME)
 b <- unique(mean_data$mean_scores)
 mean_wards <- data.frame(a, b)
-view(data)
-head(mean_wards)
-view(mean_wards)
-```
-
-```{r}
-compare_scores <- data %>%
-  as_tibble() %>%
-  select(WARD, SCORE) %>%
-  summarize(
-    The_min = min(SCORE),
-    The_max = max(SCORE),
-    Mean = mean(SCORE),
-    Std_dev = sd(SCORE)) %>%
-  arrange(desc(Mean))
-
-compare_scores %>%
-  knitr::kable(caption = "Variation of Ward Scores",
-               col.names = c("Score Min", "Score Max", "Score Mean", "Score Standard Deviation"),
-               align = c('l', 'l', 'l', 'l'),
-               booktabs = T)
-  
-```
-
-
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-
-#unique proerty types
-unique_properties <- unique(data$PROPERTY_TYPE)
-
-data %>%
-  ggplot(mapping = aes(x = SCORE, y = CONFIRMED_UNITS, color= WARDNAME)) + 
-  geom_point(alpha = 0.5)
-
-data %>%
-  ggplot(mapping = aes(y = SCORE, fill=WARDNAME)) +
-  geom_bar()
 
 mut_data <- data %>%
   mutate(score_category =
@@ -127,50 +90,118 @@ mut_data <- data %>%
                                             )
                                  )
          )
-view(mut_data)
 
+view(data)
+head(mean_wards)
+view(mean_wards)
+```
+
+```{r, include=FALSE}
+compare_scores <- data %>%
+  as_tibble() %>%
+  select(WARD, SCORE) %>%
+  summarize(
+    The_min = min(SCORE),
+    The_max = max(SCORE),
+    Mean = mean(SCORE),
+    Std_dev = sd(SCORE)) %>%
+  arrange(desc(Mean))
+
+year_mean_scores <- mut_data %>% 
+  group_by(YEAR_EVALUATED) %>%
+  summarise(value = mean(SCORE))
+```
+
+```{r scoresummary,fig.cap="Variation of Apartment Evaluation Scores", echo=FALSE, warning=FALSE, message=FALSE}
+compare_scores %>%
+  knitr::kable(caption = "Variation of Ward Scores",
+               col.names = c("Score Min", "Score Max", "Score Mean", "Score Standard Deviation"),
+               align = c('l', 'l', 'l', 'l'),
+               booktabs = T)
+```
+
+<!-- \vspace{12pt} -->
+```{r catscores, fig.cap="Number of buildings in each of the 4 RentSafeTO evaluation categories",echo = FALSE}
 #Figure 1
-mut_data %>%
-  ggplot(mapping = aes(x = score_category)) +
-  geom_bar(position = "dodge")
+ggplot(mut_data,mapping = aes(x = score_category)) +
+geom_bar(position = "dodge", fill = "steelblue") + 
+theme_minimal() +
+labs(x = "RentSafeTO categories for apartment scores",
+     y = "Number of buildings")
 ```
 
 We can see how there are a lot of apartment building with a score thats between 66 and 85, which means they wont be evaluated for the next 2 years and are consiered to be in good condition overall. But what makes the score of these buildings higher than the rest? And what do the few buildings with a score of more than 86 do that separtes them from the rest?
 
+# Models
 
-
-# Model
-
-```{r}
+```{r wardmeans, fig.cap= "Variation of the average scores for each ward", echo=FALSE, warning=FALSE, message=FALSE}
 #Figure 2
 mean_wards %>%
-  ggplot(mapping = aes(x = b, y = a)) +
-  geom_bar(stat = "identity", position = "dodge")
+  ggplot(mapping = aes(x = a, y = b, fill= a)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.8) +
+  labs(y = "Average Evaluation Scores",
+       x = "Ward Names") +
+  theme(axis.text.x = element_text(angle = 65, hjust = 1),
+        legend.position = "none") +
+#  scale_fill_gradient(low = "white", high = "black") +
+  scale_y_continuous(limits=c(65,80), oob = rescale_none)
 
 ```
 
-```{r}
+```{r stairs, fig.cap="Relationship between number of stairwells and score",echo=FALSE, warning=FALSE, message=FALSE, out.width='80%'}
 #change fill
 #Figure 3
 data %>%
-  ggplot(mapping = aes(x = SCORE, y = STAIRWELLS, color = WARDNAME)) +
-  geom_point()
-
+  ggplot(mapping = aes(x = SCORE, y = STAIRWELLS, color = STAIRWELLS)) +
+  geom_point() +
+  theme_minimal() +
+  labs(x = "Evaluation Score",
+       y = "Number of Stairwells",
+       caption = "Relationship between increase in Stairwells and Evaluation Score")+ 
+  scale_color_viridis(discrete = FALSE, option = "D")+
+  scale_fill_viridis(discrete = FALSE) 
+```
+```{r elevators, fig.cap="Relationship between number of elevators and score",echo=FALSE, warning=FALSE, message=FALSE, out.width='80%'}
+#change fill
+#Figure 3
 data %>%
-  ggplot(mapping = aes(x = SCORE, y = ELEVATORS, color = WARDNAME)) +
-  geom_point()
-
+  ggplot(mapping = aes(x = SCORE, y = ELEVATORS, color = ELEVATORS)) +
+  geom_point() +
+  theme_minimal() +
+  labs(x = "Evaluation Score",
+       y = "Number of Elevators",
+       caption = "Relationship between increase in Elevators and Evaluation Score")+ 
+  scale_color_viridis(discrete = FALSE, option = "D")+
+  scale_fill_viridis(discrete = FALSE) 
+```
+```{r security, fig.cap="Relationship between number of security and score",echo=FALSE, warning=FALSE, message=FALSE, out.width='80%'}
+#change fill
+#Figure 3
 data %>%
-  ggplot(mapping = aes(x = SCORE, y = SECURITY, color = WARDNAME)) +
-  geom_point()
-
+  ggplot(mapping = aes(x = SCORE, y = SECURITY, color = SECURITY)) +
+  geom_point() +
+  theme_minimal() +
+  labs(x = "Evaluation Score",
+       y = "Number of Security",
+       caption = "Relationship between increase in Security and Evaluation Score")+ 
+  scale_color_viridis(discrete = FALSE, option = "D")+
+  scale_fill_viridis(discrete = FALSE) 
+```
+```{r laundry, fig.cap="Relationship between number of laundry rooms and score",echo=FALSE, warning=FALSE, message=FALSE, out.width='80%'}
+#change fill
+#Figure 3
 data %>%
-  ggplot(mapping = aes(x = SCORE, y = LAUNDRY_ROOMS, color = WARDNAME)) +
-  geom_point()
-
+  ggplot(mapping = aes(x = SCORE, y = LAUNDRY_ROOMS, color = LAUNDRY_ROOMS)) +
+  geom_point() +
+  theme_minimal() +
+  labs(x = "Evaluation Score",
+       y = "Number of Laundry Rooms",
+       caption = "Relationship between increase in Laundry Rooms and Evaluation Score")+ 
+  scale_color_viridis(discrete = FALSE, option = "D")+
+  scale_fill_viridis(discrete = FALSE) 
 ```
 
-# Results
+\newpage
 
 # Discussion
 
@@ -192,12 +223,14 @@ While their are other factors included in the dataset, such as number of lobbies
 
 An important aspect of introducing and keeping large amounts on data on a program such as RentSafeTO in a populous and fast growing city like Toronto is to observe growth and see if it has been helpful or not. I calculated the averege scores over all the buildings and grouped them by the year of evaluation. The first year the prgram was conducted (2017), the average score was only 65. But since these were strict laws and building owners followed them, we saw a large incerease in the average score over the next 2 years, going up all the way to 79 in 2019. A few points have dropped in the last 2 years, but I think this can be attributed to the COVID-19 pandemic. 
 
-```{r}
+```{r yearavg,fig.cap="Variation of Apartment Evaluation Year-wise", echo=FALSE, warning=FALSE, message=FALSE}
 #Table 2 
-year_mean_scores <- mut_data %>% 
-  group_by(YEAR_EVALUATED) %>%
-  summarise(value = mean(SCORE))
-year_mean_scores
+
+year_mean_scores %>%
+  knitr::kable(caption = "Yearly Score Changes",
+               col.names = c("Year", "Average Score"),
+               align = c('l','l'),
+               booktabs = T)
 ```
 
 
@@ -209,19 +242,7 @@ I belive a good step to make as this program continues is to maybe modify the ca
 
 \newpage
 
-\appendix
-
-# Appendix {-}
-
-
-# Additional details
-
-
-\newpage
-
 
 # References
-https://www.toronto.ca/community-people/housing-shelter/rental-housing-tenant-information/rental-housing-standards/apartment-building-standards/rentsafeto-for-tenants/
 
-https://www.toronto.ca/community-people/housing-shelter/rental-housing-tenant-information/rental-housing-standards/apartment-building-standards/rentsafeto-for-building-owners/rentsafeto-building-evaluations-and-audits/
 
