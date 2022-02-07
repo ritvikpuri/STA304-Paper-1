@@ -90,10 +90,6 @@ mut_data <- data %>%
                                             )
                                  )
          )
-
-view(data)
-head(mean_wards)
-view(mean_wards)
 ```
 
 ```{r, include=FALSE}
